@@ -1,0 +1,3 @@
+# Gaitonde
+
+A Discord bot

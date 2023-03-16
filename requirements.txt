@@ -1,0 +1,5 @@
+yt-dlp
+discord.py
+nekos.py
+websockets
+beautifulsoup4

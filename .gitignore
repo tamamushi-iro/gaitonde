@@ -1,0 +1,23 @@
+# Environment file
+.env
+
+# Error logs
+*.log
+
+# Backups dir
+.backups/*
+
+# Birthday database
+*.db
+
+# Pycache dir
+__pycache__/
+
+# vscode settings
+.vscode
+
+# Files in sounds
+sounds/*
+
+# listen moe now playing
+nowPlaying.json
