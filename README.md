@@ -40,3 +40,31 @@ RestartSec=10
 [Install]
 WantedBy=default.target
 ```
+
+Expected Directory Structure:
+```X Font Directory Index
+gaitonde/
+├── .backups/
+│   └── ...
+├── .errors/
+│   ├── archive/
+│   │   └── ...
+│   ├── gaitonde_error.log
+│   └── wss_error.log
+├── sounds/
+│   ├── sound_file.mp3
+│   └── ...
+├── .env
+├── .gitignore
+├── bDayBoiis.db
+├── gaitonde_bDayWisher.py
+├── gaitonde_general.py
+├── gaitonde_radio.py
+├── gaitonde_ytstream.py
+├── gaitonde.py
+├── LICENSE
+├── nowPlaying.json
+├── README.md
+├── requirements.txt
+└── wss_listen_moe.py
+```
