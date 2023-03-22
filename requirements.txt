@@ -1,5 +1,7 @@
+discord.py[voice]
 yt-dlp
-discord.py
 nekos.py
 websockets
 beautifulsoup4
+python-dotenv
+python-dateutil

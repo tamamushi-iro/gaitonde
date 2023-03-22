@@ -16,7 +16,8 @@ TOKEN = os.getenv('GAITONDE_TOKEN')
 
 prefix = '>'
 
-intents = discord.Intents.default()
+intents = discord.Intents.all()
+# intents = discord.Intents.default()
 # intents.members = True
 bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), description='"Apun Bhagwan tha, ek tayme, bahut pehle." - Gaitonde probably', intents=intents)
 
@@ -35,9 +36,13 @@ async def on_command_error(ctx, error):
 		return await ctx.send(f'Command "{ctx.command}": A required argument is missing.')
 	logger.error(f'command: {prefix}{ctx.command} | error: {error}')
 
-bot.add_cog(General(bot))
-bot.add_cog(Radio(bot))
-bot.add_cog(YTStream(bot))
-bot.add_cog(BDayWisher(bot))
+async def main():
+	async with bot:
+		await bot.add_cog(General(bot))
+		await bot.add_cog(Radio(bot))
+		await bot.add_cog(YTStream(bot))
+		await bot.add_cog(BDayWisher(bot))
+		await bot.start(TOKEN)
 
-bot.run(TOKEN)
+# bot.run(TOKEN)
+asyncio.run(main())

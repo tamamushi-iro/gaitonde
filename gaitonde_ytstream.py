@@ -286,7 +286,7 @@ class YTStream(commands.Cog):
 
 	@commands.command(aliases=['sb'])
 	async def soundboard(self, ctx, *, code):
-		"""Options: sw, ss, yay, ting, weebAsylum"""
+		"""Options: sw, ss, yay, ting, weebAsylum, rage"""
 		# SoundBoard sw: Scheming Weasel, ss: Sneaky Snitch, ting: Message Tone, yay: Fluttershy Yay, weebAsylum: Weeb Asylum
 		if code == 'sw': source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('sounds/SchemingWeasel.opus', **ffmpeg_options), volume=0.5)
 		elif code == 'ss': source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('sounds/SneakySnitch.m4a', **ffmpeg_options), volume=0.5)
@@ -295,6 +295,7 @@ class YTStream(commands.Cog):
 		elif code == 'weebAsylum':
 			await ctx.send(file=discord.File(f'{MAYMAYS_DIR_PATH}/weebAsylum.webp'))
 			source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('sounds/weebAsylum.opus', **ffmpeg_options), volume=1)
+		elif code == 'rage': source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('sounds/003_rage.wav', **ffmpeg_options), volume=1)
 		ctx.voice_client.play(source, after=lambda e: logger.error(e) if e else None)
 
 	@commands.command()
