@@ -147,7 +147,7 @@ class BDayWisher(commands.Cog):
 		for char in ['{', '}', "'", ',', '"']: next_bdays = next_bdays.replace(char, '')
 		await ctx.send(f'Upcoming BDays (next 3 months):\n``` {next_bdays}```')
 
-	@tasks.loop(minutes=1.1)
+	@tasks.loop(minutes=1)
 	async def wishing_loop(self):
 		# print(self.bot.get_guild(TCS_GLD_ID).roles)
 		# NOTE: CURRENT CODE FOR TCS GUILD ONLY. Start from below for loop to make it work for all guilds.

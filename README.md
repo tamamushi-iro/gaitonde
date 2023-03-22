@@ -1,6 +1,6 @@
 # Gaitonde
 
-A Discord bot
+A Discord Bot
 
 To run as a systemd service, Systemd service file examples:
 
