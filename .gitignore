@@ -1,4 +1,4 @@
-# Environment
+# Virtual Environment
 .venv
 
 # Environment file
@@ -10,17 +10,17 @@
 # Backups dir
 .backups/*
 
-# Birthday database
+# Databases
 *.db
 
 # Pycache dir
 __pycache__/
 
-# vscode settings
+# VSCode settings
 .vscode
 
-# Files in sounds
+# Soundboard files
 sounds/*
 
-# listen moe now playing
+# listen.moe now playing
 nowPlaying.json

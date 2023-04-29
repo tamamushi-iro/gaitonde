@@ -1,50 +1,35 @@
-# Look into discord.py's tasks: https://discordpy.readthedocs.io/en/stable/ext/tasks/index.html - DONE
-# TODO: Look into: https://stackoverflow.com/questions/1301493/setting-timezone-in-python
-
 import os
 import re
 import json
 import logging
 import sqlite3 as sql
-import datetime as dt
 
 from time import time
 from pprint import pformat
 from dotenv import load_dotenv
 from discord.ext import tasks, commands
+from datetime import date, datetime, timedelta
 from dateutil.relativedelta import relativedelta
-from datetime import date, datetime, timedelta, timezone
 
 logger = logging.getLogger(__name__)
 
 load_dotenv()
-TCS_GLD_ID = int(os.getenv('TCS_GLD_ID'))
-TCS_GENERAL_CHNL_ID = int(os.getenv('TCS_GENERAL_CHNL_ID'))
-TCS_EVERINYAN_ROLE_ID = int(os.getenv('TCS_EVERINYAN_ROLE_ID'))
-
-TEST_GLD_ID = int(os.getenv('TEST_GLD_ID'))
-TEST_GENERAL_CHNL_ID = int(os.getenv('TEST_GENERAL_CHNL_ID'))
+TCS_GLD_ID = os.getenv('TCS_GLD_ID')
+TCS_GENERAL_CHNL_ID = os.getenv('TCS_GENERAL_CHNL_ID')
 
 class BDayWisher(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.db_name = 'bDayBoiis.db'
-		self.db_table = 'birthday_boi'
-		self.wishing_loop.start()
-
-		# # get invite to a Server
-		# print(type(self.bot))
-		# print(self.bot.guilds)
-		# print(self.bot.get_guild(TEST_GLD_ID).channels)
-		# invite = await self.bot.get_guild(TEST_GLD_ID).get_channel(TEST_GENERAL_CHNL_ID).create_invite(max_uses=1)
-		# print(invite.url)
+		self.db_name = 'reminders.db'
+		self.db_table = 'reminder'
+		self.reminder_loop.start()
 	
 	def cog_unload(self):
-		self.wishing_loop.cancel()
+		self.reminder_loop.cancel()
 	
-	@commands.command(aliases=['addboii'])
-	async def addBoii(self, ctx, *, query):
-		"""Add BDay and Boii. Usage: <command> @<bdboi-mention> "<name>" "<nickname>" <dob:YYYY-MM-DD>"""
+	@commands.command(aliases=['remind', 'reminder', 'setReminder'])
+	async def addReminder(self, ctx, *, query):
+		"""Set Reminder. Usage: <command> @<bdboi-mention> "<name>" "<nickname>" <dob:YYYY-MM-DD>"""
 		query = re.match(r'<@(\d*)> *["\'](.*)["\'] *["\'](.*)["\'] *(\d{4}-\d{2}-\d{2})$', query.strip())
 		if query:
 			discordID, fullName, nickname, dob = query.groups()
@@ -144,12 +129,11 @@ class BDayWisher(commands.Cog):
 				next_bdays[dob_this_year.isoformat()] = row[2]
 			if today < dob_next_year < today + relativedelta(months=3):
 				next_bdays[dob_next_year.isoformat()] = row[2]
-		next_bdays = pformat(next_bdays, sort_dicts=True, width=50)
-		# print(next_bdays)
+		next_bdays = pformat(next_bdays, sort_dicts=True)
 		for char in ['{', '}', "'", ',', '"']: next_bdays = next_bdays.replace(char, '')
 		await ctx.send(f'Upcoming BDays (next 3 months):\n``` {next_bdays}```')
 
-	@tasks.loop(time=dt.time(hour=0, minute=0, tzinfo=timezone(offset=timedelta(hours=5, minutes=30), name='IST')))
+	@tasks.loop(minutes=1)
 	async def wishing_loop(self):
 		# print(self.bot.get_guild(TCS_GLD_ID).roles)
 		# NOTE: CURRENT CODE FOR TCS GUILD ONLY. Start from below for loop to make it work for all guilds.
@@ -157,18 +141,23 @@ class BDayWisher(commands.Cog):
 		# print(self.wishing_loop.current_loop, self.wishing_loop.next_iteration)
 		# NOTE: server runs in UTC time zone
 		today = datetime.now() + timedelta(hours=5, minutes=30)	# in IST
-		logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
-		chicardoChat_general = self.bot.get_guild(TCS_GLD_ID).get_channel(TCS_GENERAL_CHNL_ID)
-		conn = sql.connect(self.db_name)
-		cur = conn.cursor()
-		res = cur.execute(f"SELECT * FROM {self.db_table} WHERE guildID = '{TCS_GLD_ID}';").fetchall()
-		conn.close()
-		for row in res:
-			dob = date.fromisoformat(row[4])
-			year, month, day = dob.year, dob.month, dob.day
-			if today.month == month and today.day == day:
-				# await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Jayanti {row[2]}! You are {today.year - year} years old today.")
-				await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Jayanti {row[2]}!")
+		# logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
+		if today.hour == 0 and today.minute == 0:
+			# logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
+			chicardoChat_general = self.bot.get_guild(TCS_GLD_ID).get_channel(TCS_GENERAL_CHNL_ID)
+			conn = sql.connect(self.db_name)
+			cur = conn.cursor()
+			res = cur.execute(f"SELECT * FROM {self.db_table} WHERE guildID = '{TCS_GLD_ID}';").fetchall()
+			conn.close()
+			for row in res:
+				dob = date.fromisoformat(row[4])
+				year, month, day = dob.year, dob.month, dob.day
+				if today.month == month and today.day == day:
+					# await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Jayanti {row[2]}! You are {today.year - year} years old today.")
+					await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Jayanti {row[2]}!")
+
+			# time_delta = datetime(today.year, today.month, today.day + 1, hour=0, minute=0, second=0) - datetime.now() - timedelta(seconds=19800)
+			# self.wishing_loop.change_interval(seconds=time_delta.seconds + 1)
 	
 	# we need to wait for the bot to be ready
 	# as failing to do so will raise an attribute error:

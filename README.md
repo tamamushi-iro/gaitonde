@@ -2,7 +2,7 @@
 
 A Discord Bot
 
-To run as a systemd service, Systemd service file examples:
+Systemd service file examples:
 
 ```desktop
 $ cat /etc/systemd/system/gaitonde-bot.service 
@@ -68,3 +68,6 @@ gaitonde/
 ├── requirements.txt
 └── wss_listen_moe.py
 ```
+
+Note:
+- a huge initial chunck of the code was written on putty-nano editor, where default indentaion was 8-spaced Tabs, still left in files.
