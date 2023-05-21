@@ -148,6 +148,23 @@ class BDayWisher(commands.Cog):
 		# print(next_bdays)
 		for char in ['{', '}', "'", ',', '"']: next_bdays = next_bdays.replace(char, '')
 		await ctx.send(f'Upcoming BDays (next 3 months):\n``` {next_bdays}```')
+	
+	@commands.command(aliases=['ummar', 'umar'])
+	async def age(self, ctx, * , query):
+		"""Show Boii's age"""
+		discordID = re.match(r'^<@(\d*)>$', query.strip())
+		if discordID:
+			discordID = discordID.groups()[0]
+			conn = sql.connect(self.db_name)
+			cur = conn.cursor()
+			res = cur.execute(f'SELECT * FROM {self.db_table} WHERE discordID = {discordID} and guildID = {ctx.guild.id};').fetchone()
+			dob = date.fromisoformat(res[4])
+			today = (datetime.now() + timedelta(hours=5, minutes=30)).date()	# in IST
+			age = relativedelta(today, dob)
+			await ctx.send(f"{res[2]} is ``{age.years} years {age.months} months and {age.days} days`` old today.")
+			conn.close()
+		else:
+			await ctx.send(f'Usage: \n``{ctx.prefix}{ctx.command} @<bdboi-mention>``')
 
 	@tasks.loop(time=dt.time(hour=0, minute=0, tzinfo=timezone(offset=timedelta(hours=5, minutes=30), name='IST')))
 	async def wishing_loop(self):
