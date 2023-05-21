@@ -78,7 +78,7 @@ class Radio(commands.Cog):
 
 	@commands.command()
 	async def jp(self, ctx):
-		"""Now playing on the LISTEN.moe stream."""
+		"""Now playing on the LISTEN.moe J-Pop stream."""
 		await ctx.send(embed=self.npEmbed())
 
 	@commands.command()

@@ -173,8 +173,8 @@ class BDayWisher(commands.Cog):
 		# for guild in self.bot.guilds:
 		# print(self.wishing_loop.current_loop, self.wishing_loop.next_iteration)
 		# NOTE: server runs in UTC time zone
+		# logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
 		today = datetime.now() + timedelta(hours=5, minutes=30)	# in IST
-		logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
 		chicardoChat_general = self.bot.get_guild(TCS_GLD_ID).get_channel(TCS_GENERAL_CHNL_ID)
 		conn = sql.connect(self.db_name)
 		cur = conn.cursor()
