@@ -85,6 +85,18 @@ class General(commands.Cog):
 	# 		await questionMessage.edit(content=f'Name: {name}\nDOB? (YYYY-MM-DD)')
 	# 		dob = await self.bot.wait_for('message', check=checkName, timeout=15)
 
+	# @commands.Cog.listener('on_message')
+	# async def insta_replacer(self, message):
+	# 	# TODO: Refer https://instaloader.github.io/
+	# 	# Images
+	# 	# https://www.instagram.com/p/CnzAwydLi-1/
+	# 	# https://www.instagram.com/p/Cn9bbbYNC7t/
+	# 	# Reels
+	# 	# https://www.instagram.com/reel/Cnaea8SK7Kn/
+	# 	# https://www.instagram.com/reel/CpYYBCShGem/
+	# 	if re.match(r'https://[www\.]*instagram.com/(.+?)/(.+?)/*.*', message.content.strip()):
+	# 		print(f'Insta Link on_message triggered! {message.content}')
+
 	@tasks.loop(minutes=10)
 	async def activity_loop(self):
 		await self.bot.change_presence(activity=discord.Game(name=next(self.activities)))
