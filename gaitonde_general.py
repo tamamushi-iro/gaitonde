@@ -1,4 +1,5 @@
 import re, os, asyncio, requests, discord
+# import yt_dlp as youtube_dl
 from itertools import cycle
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
@@ -25,6 +26,22 @@ class General(commands.Cog):
 			'God'
 		])
 		self.activity_loop.start()
+
+		# self.YTDL_OPTIONS = {
+		# 	# 'audioformat': 'mp3',
+		# 	'outtmpl': '%(extractor)s-%(id)-s%(title)s.%(ext)s',
+		# 	'restrictfilenames': True,
+		# 	'noplaylist': True,
+		# 	'nocheckcertificate': True,
+		# 	'ignoreerrors': False,
+		# 	'logtostderr': False,
+		# 	'quiet': True,
+		# 	'no_warnings': True,
+		# 	'default_search': 'auto',
+		# 	'soruce_address': '0.0.0.0'
+		# }
+
+		# self.ytdl = youtube_dl.YoutubeDL(self.YTDL_OPTIONS)
 
 	@commands.command()
 	async def why(self, ctx):
@@ -67,7 +84,7 @@ class General(commands.Cog):
 		# await ctx.send(ctx.author.display_avatar)
 		discordID = re.match(r'^<@(\d*)>$', query.strip()).groups()[0]
 		user = await ctx.guild.fetch_member(discordID)
-		await ctx.send(f'https://cdn.discordapp.com/avatars/{user.id}/{user.avatar}.png?size=1024')
+		await ctx.send(user.avatar)
 	
 	@commands.command()
 	async def upparsegaya(self, ctx, *, query):
@@ -96,6 +113,7 @@ class General(commands.Cog):
 	# 	# https://www.instagram.com/reel/CpYYBCShGem/
 	# 	if re.match(r'https://[www\.]*instagram.com/(.+?)/(.+?)/*.*', message.content.strip()):
 	# 		print(f'Insta Link on_message triggered! {message.content}')
+	# 		print(self.ytdl.download(message.content.strip()))
 
 	@tasks.loop(minutes=10)
 	async def activity_loop(self):
