@@ -90,7 +90,7 @@ class General(commands.Cog):
 	async def upparsegaya(self, ctx, *, query):
 		discordID = re.match(r'^<@(\d*)>$', query.strip()).groups()[0]
 		user = await ctx.guild.fetch_member(discordID)
-		await ctx.send(f'https://api.popcat.xyz/jokeoverhead?image={user.avatar.replace("?size=1024", "")}')
+		await ctx.send(f'https://api.popcat.xyz/jokeoverhead?image={str(user.avatar).replace("?size=1024", "")}')
 
 	# @commands.command()
 	# async def addBday(self, ctx):
