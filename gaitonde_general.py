@@ -115,6 +115,19 @@ class General(commands.Cog):
 	# 		print(f'Insta Link on_message triggered! {message.content}')
 	# 		print(self.ytdl.download(message.content.strip()))
 
+	@commands.Cog.listener('on_message')
+	async def link_sanitizer(self, message):
+		# print(message.author)
+		# Instagram
+		lnk_match = re.search(r'https://[w{3}\.]*instagram.com/(.+?)/(.+?)[/\? $\n]( .*)*', message.content.strip())
+		if lnk_match and message.author != self.bot.user:
+			# print(f'Insta Link on_message triggered! {message.content}')
+			await message.reply(f'https://www.instagram.com/{lnk_match.groups()[0]}/{lnk_match.groups()[1]}/\nsent by {message.author} with message: {lnk_match.groups()[2]}')
+			await message.delete(delay=1)
+			return
+		# lnk_match = re.search(r'https://', message.content.strip())
+		
+
 	@tasks.loop(minutes=10)
 	async def activity_loop(self):
 		await self.bot.change_presence(activity=discord.Game(name=next(self.activities)))
