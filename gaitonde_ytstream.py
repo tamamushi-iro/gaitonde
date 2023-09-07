@@ -199,7 +199,11 @@ class YTStream(commands.Cog):
 		songList = ''
 		for i, song in enumerate(response):
 			songList += f'\n**{i+1}**: {html.unescape(response[i]["snippet"]["title"])} - ``{html.unescape(response[i]["snippet"]["channelTitle"])}``'
-		if songList == '': songList = ' Kasuj na madyu :('
+		# Fix: if no search results are found, it'll still wait for reply and even try to play a song if one replies.
+		# TODO: check if this works
+		if songList == '':
+			await ctx.send(f'**Search results for "{query}":** ``Kasuj na madyu :(``')
+			return
 		resultsMessage = await ctx.send(f'**Search results for "{query}":** ``Select from the following:``{songList}')
 		def checkReply(msg): return msg.content.isdigit() and int(msg.content) in range(1, len(response) + 1) and msg.channel == ctx.channel
 		try:
