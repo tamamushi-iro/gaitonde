@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from discord.ext import commands
 from gaitonde_radio import Radio
 from gaitonde_general import General
+from gaitonde_reminder import Reminder
 from gaitonde_ytstream import YTStream
 from gaitonde_bDayWisher import BDayWisher
 
@@ -23,7 +24,7 @@ bot = commands.Bot(command_prefix=commands.when_mentioned_or(prefix), descriptio
 
 @bot.event
 async def on_ready():
-	logger.warning(f'Bot Connected. Name: {bot.user.name}, ID: {bot.user.id}')
+	logger.warning(f'Bot Ready. Name: {bot.user.name}, ID: {bot.user.id}')
 
 @bot.event
 async def on_command_error(ctx, error):
@@ -42,6 +43,7 @@ async def main():
 		await bot.add_cog(Radio(bot))
 		await bot.add_cog(YTStream(bot))
 		await bot.add_cog(BDayWisher(bot))
+		await bot.add_cog(Reminder(bot))
 		await bot.start(TOKEN)
 
 # bot.run(TOKEN)

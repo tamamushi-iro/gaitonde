@@ -3,9 +3,9 @@ import re, os, asyncio, requests, discord
 from itertools import cycle
 from dotenv import load_dotenv
 from discord.ext import commands, tasks
-# import logging
+import logging
 
-# logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 load_dotenv()
 MAYMAYS_BASE_URL = os.getenv('MAYMAYS_BASE_URL')
@@ -92,16 +92,6 @@ class General(commands.Cog):
 		user = await ctx.guild.fetch_member(discordID)
 		await ctx.send(f'https://api.popcat.xyz/jokeoverhead?image={str(user.avatar).replace("?size=1024", "")}')
 
-	# @commands.command()
-	# async def addBday(self, ctx):
-	# 	def checkName(msg): return len(msg) < and msg.channel == ctx.channel
-	# 	name = dob = '*Some Error. Rerun command after timeout.*'
-	# 	try:
-	# 		questionMessage = await ctx.send("Name?")
-	# 		name = await self.bot.wait_for('message', check=checkName, timeout=15)
-	# 		await questionMessage.edit(content=f'Name: {name}\nDOB? (YYYY-MM-DD)')
-	# 		dob = await self.bot.wait_for('message', check=checkName, timeout=15)
-
 	# @commands.Cog.listener('on_message')
 	# async def insta_replacer(self, message):
 	# 	# TODO: Refer https://instaloader.github.io/
@@ -119,13 +109,33 @@ class General(commands.Cog):
 	async def link_sanitizer(self, message):
 		# print(message.author)
 		# Instagram
-		lnk_match = re.search(r'https://[w{3}\.]*instagram.com/(.+?)/(.+?)[/\? $\n]( .*)*', message.content.strip())
+		lnk_match = re.search(r'https://[w{3}\.]*instagram.com/(.+?)/(.+?)([/\? \n]|$)( .*)*', message.content.strip())
 		if lnk_match and message.author != self.bot.user:
 			# print(f'Insta Link on_message triggered! {message.content}')
-			await message.reply(f'https://www.instagram.com/{lnk_match.groups()[0]}/{lnk_match.groups()[1]}/\nsent by {message.author} with message: {lnk_match.groups()[2]}')
+			await message.channel.send(
+				f'``{message.author}`` sent: https://www.instagram.com/{lnk_match.groups()[0]}/{lnk_match.groups()[1]}/{" with message: " + lnk_match.groups()[3] if lnk_match.groups()[3] else ""}'
+			)
 			await message.delete(delay=1)
 			return
-		# lnk_match = re.search(r'https://', message.content.strip())
+		# Twitter
+		lnk_match = re.search(r'https://(x|twitter).com/(.+?)/(.+?)/(.+?)([/\? \n]|$)( .*)*', message.content.strip())
+		if lnk_match and message.author != self.bot.user:
+			# print(f'Twitter Link on_message triggered! {message.content}')
+			await message.channel.send(
+				f'``{message.author}`` sent: https://vxtwitter.com/{lnk_match.groups()[1]}/{lnk_match.groups()[2]}/{lnk_match.groups()[3]}{" with message: " + lnk_match.groups()[5] if lnk_match.groups()[5] else ""}'
+			)
+			await message.delete(delay=1)
+			return
+		# Google Search
+		lnk_match = re.search(r'https://www.google.com/search\?q=(.+?)([/\? \n]|$)( .*)*', message.content.strip())
+		if lnk_match and message.author != self.bot.user:
+			# print(f'Google Link on_message triggered! {message.content}')
+			await message.channel.send(
+				f'``{message.author}`` sent: https://google.com/search?q={lnk_match.groups()[0]}{" with message: " + lnk_match.groups()[2] if lnk_match.groups()[2] else ""}'
+			)
+			await message.delete(delay=1)
+			return
+		# Amazon
 		
 
 	@tasks.loop(minutes=10)
