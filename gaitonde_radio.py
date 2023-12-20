@@ -61,6 +61,8 @@ class Radio(commands.Cog):
 	async def moe(self, ctx):
 		"""Play LISTEN.moe's J-Pop Stream."""
 		if ctx.voice_client is not None:
+			# NOTE: encountered new bug? when song changes in the stream, the bot falls silent for a few seconds before randomly starting after song is already in a few seconds
+			# TODO: try and check if FFmpegOpusAudio and https://listen.moe/opus solves the random song bits skipping and skipping of first few seconds
 			source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio('https://listen.moe/stream', **ffmpeg_options), volume=0.5)
 			ctx.voice_client.play(source, after=lambda e: logger.error(e) if e else None)
 

@@ -28,7 +28,7 @@ TEST_GENERAL_CHNL_ID = int(os.getenv('TEST_GENERAL_CHNL_ID'))
 class BDayWisher(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
-		self.db_name = 'bDayBoiis.db'
+		self.db_name = 'gaitonde.db'
 		self.db_table = 'birthday_boi'
 		self.wishing_loop.start()
 

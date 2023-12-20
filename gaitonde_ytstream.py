@@ -2,7 +2,7 @@ import discord, requests, html
 import os, asyncio, datetime, time, logging
 # import pprint
 import yt_dlp as youtube_dl
-from random import choice
+from random import choice as random_choice
 from dotenv import load_dotenv
 from discord.ext import commands
 
@@ -118,13 +118,16 @@ class YTStream(commands.Cog):
 			'type': 'video',
 			# 'videoCategoryId': '10',
 			'maxResults': 1,
-			'key': choice([NETHR, NPYTT]),
+			'key': random_choice([NETHR, NPYTT]),
 			'q': query
 			# 'order': 'viewCount' # Note: 'relevance' by default in the youtube data api
 		}
 		response = requests.get(url=url, params=params).json()
 		# pprint.pprint(response)
-		return response['items'][0]['id']['videoId']
+		try:
+			return response['items'][0]['id']['videoId']
+		except IndexError:
+			return None
 
 	@classmethod
 	def estimatedTimeToPlay(self, player, guildQueue):
@@ -172,7 +175,11 @@ class YTStream(commands.Cog):
 		guildQueue = self.getGuildQueue(ctx)
 		if ctx.voice_client is not None:
 			if len(guildQueue.ytQueue) >= self.queueLimit: return await ctx.send(f'Queue Full. Capacity: ``{self.queueLimit}``') # check is pending
+			# TODO: Is this first "if videoId is None" check necessary?
 			if videoId is None: videoId = self.getVID(query)
+			if videoId is None:
+				await ctx.send('No results found.')
+				return
 			player = await YTDLSource.fromURL(ctx, f'https://www.youtube.com/watch?v={videoId}', loop=self.bot.loop)
 			if ctx.voice_client.is_playing(): # try using if len(ytQueue) > 0: if errors, who knows?
 				guildQueue.ytQueue.append(player)
@@ -180,18 +187,19 @@ class YTStream(commands.Cog):
 				# await ctx.send(f'``{player.title}`` added to queue position: ``#{len(guildQueue.ytQueue)}``')
 			else:
 				async with ctx.typing():
-					await ctx.send('Bhai ne bola karne ka matlab karne ka!', embed=self.playEmbed(player))
+					await ctx.send(embed=self.playEmbed(player))
+					# await ctx.send('Bhai ne bola karne ka matlab karne ka!', embed=self.playEmbed(player))
 					# await ctx.send(f'baja raha hu {player.title}')
 				guildQueue.playLoop(ctx, player)
 
 	@commands.guild_only()
-	@commands.command()
+	@commands.command(aliases=['s'])
 	async def search(self, ctx, *, query):
 		"""Queries the YouTube API and returns five results to select from."""
 		params = {
 			'part': 'snippet', 'type': 'video',
 			# 'videoCategoryId': '10',
-			'maxResults': 5, 'key': NETHR,
+			'maxResults': 5, 'key': random_choice([NETHR, NPYTT]),
 			'q': query
 		}
 		response = requests.get(url='https://youtube.googleapis.com/youtube/v3/search', params=params).json()['items']
@@ -199,10 +207,8 @@ class YTStream(commands.Cog):
 		songList = ''
 		for i, song in enumerate(response):
 			songList += f'\n**{i+1}**: {html.unescape(response[i]["snippet"]["title"])} - ``{html.unescape(response[i]["snippet"]["channelTitle"])}``'
-		# Fix: if no search results are found, it'll still wait for reply and even try to play a song if one replies.
-		# TODO: check if this works
 		if songList == '':
-			await ctx.send(f'**Search results for "{query}":** ``Kasuj na madyu :(``')
+			await ctx.send(f'**Search results for "{query}":** ``No search results found.``')
 			return
 		resultsMessage = await ctx.send(f'**Search results for "{query}":** ``Select from the following:``{songList}')
 		def checkReply(msg): return msg.content.isdigit() and int(msg.content) in range(1, len(response) + 1) and msg.channel == ctx.channel
@@ -241,7 +247,7 @@ class YTStream(commands.Cog):
 			return f"``{bar[:cpos - 1] + dot + bar[cpos:]}`` ``{datetime.timedelta(seconds=pt)} / {datetime.timedelta(seconds=du)}``"
 
 	@commands.guild_only()
-	@commands.command()
+	@commands.command(aliases=['nowplaying'])
 	async def np(self, ctx):
 		"""Now playing track"""
 		guildQueue = self.getGuildQueue(ctx)
@@ -344,7 +350,7 @@ class YTStream(commands.Cog):
 				ctx.voice_client.stop()
 
 	@commands.guild_only()
-	@commands.command()
+	@commands.command(aliases=['disconnect', 'fuckoff'])
 	async def leave(self, ctx):
 		"""Leave the VC."""
 		guildQueue = self.getGuildQueue(ctx)
