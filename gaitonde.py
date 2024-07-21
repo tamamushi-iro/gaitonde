@@ -43,7 +43,7 @@ async def main():
 		await bot.add_cog(Radio(bot))
 		await bot.add_cog(YTStream(bot))
 		await bot.add_cog(BDayWisher(bot))
-		await bot.add_cog(Reminder(bot))
+		# await bot.add_cog(Reminder(bot))
 		await bot.start(TOKEN)
 
 # bot.run(TOKEN)

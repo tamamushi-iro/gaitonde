@@ -29,13 +29,13 @@ class Reminder(commands.Cog):
             'EDT': 'America/New_York',      # Eastern Daylight Time
             'GMT': 'GMT',                   # Greenwich Mean Time,
             'PST': 'America/Los_Angeles',   # Pacific Standard Time
-            'PDT': 'America/Los_Angeles',   # Pacific Daylight Time|
+            'PDT': 'America/Los_Angeles',   # Pacific Daylight Time
             'UTC': 'UTC'                    # Coordinated Universal Time
         }
         # self.reminder_loop.start()
     
     def parse_timestamp(self, tsstr):
-        m = re.match(r'(\d{1,2})[-_/](\d{1,2})[-_/](\d{2,4})[\s_T](\d{1,2}):*(\d{1,2})*\s*(am|pm)*\s*([a-zA-Z]{3})*', tsstr.strip())
+        m = re.match(r'(\d{1,2})[-_/](\d{1,2})[-_/](\d{2,4})[\s_T](\d{1,2}):*(\d{1,2})*\s*(am|AM|pm|PM)*\s*([a-zA-Z]{3})*', tsstr.strip())
         if m:
             date, month, year, hour, minute, time_of_day, timezone_abbr = m.groups()
             date, month, year = int(date), int(month), int(year)
@@ -46,7 +46,7 @@ class Reminder(commands.Cog):
             timestamp_str = f'{year + 2000 if year < 100 else year}-{month:02}-{date:02} {hour:02}:{minute:02} {time_of_day}'
             dt = datetime.strptime(timestamp_str, '%Y-%m-%d %I:%M %p')
             
-            timezone = self.tz_map.get(timezone_abbr.upper())
+            timezone = self.tz_map[timezone_abbr]
             dt = dt.replace(tzinfo=ZoneInfo(timezone))
             return dt
         else:
@@ -73,13 +73,13 @@ class Reminder(commands.Cog):
                 cur.execute(
                     """
                     INSERT INTO {} (
-                        remindDateTime, messageRef, addedBy, addedOn, guildID, active
+                        remindDateTime, messageRefURL, addedBy, addedOn, guildID, active
                     ) VALUES (
-                        :remindDateTime, :messageRef, :addedBy, :addedOn, :guildID, active
+                        :remindDateTime, :messageRefURL, :addedBy, :addedOn, :guildID, :active
                     );
                     """.format(self.db_table), {
                         'remindDateTime': remind_datetime,
-                        'messageRef': ctx.message.reference,
+                        'messageRefURL': ctx.message.reference.jump_url,
                         'addedBy': f'{ctx.author.name}<:>{ctx.author.id}',
                         'addedOn': str(datetime.now()).split('.')[0],
                         'guildID': ctx.guild.id,
@@ -116,11 +116,11 @@ class Reminder(commands.Cog):
         """Show DB Entries"""
         conn = sql.connect(self.db_name)
         cur = conn.cursor()
-        res = cur.execute(f'SELECT * FROM {self.db_table} WHERE guildID = {ctx.guild.id} ORDER BY  DESC;')
+        res = cur.execute(f'SELECT * FROM {self.db_table} WHERE guildID = {ctx.guild.id} ORDER BY remindDateTime DESC;')
         response = ''
         for i, row in enumerate(res):
-            response += f"\n{i+1}. {row[2]} - {row[4]}"
-        await ctx.send(f'Birthday Boiis for this Guild:\n```{response}```' if response else f'No BDayBoii added in this Guild.')
+            response += f"\n{i+1}. {row[1]} - {row[2]}"
+        await ctx.send(f'Reminders for this Guild:\n```{response}```' if response else f'No Reminder found for this Guild.')
         conn.close()
     
     # @commands.command(aliases=['showremider', 'sr'])

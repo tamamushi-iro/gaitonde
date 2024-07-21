@@ -136,6 +136,14 @@ class General(commands.Cog):
 			await message.delete(delay=1)
 			return
 		# Amazon
+		# lnk_match = re.search(r'https://www.amazon\.[a-z]+?/(?:dp|gp/product)/([A-Z0-9]{10})([/\? \n]|$)( .*)*', message.content.strip())
+		# if lnk_match and message.author != self.bot.user:
+		# 	# Construct the Amazon link using the extracted ASIN (Amazon Standard Identification Number)
+		# 	await message.channel.send(
+		# 		f'``{message.author}`` sent: https://www.amazon.com/dp/{lnk_match.groups()[0]}{" with message: " + lnk_match.groups()[2] if lnk_match.groups()[2] else ""}'
+		# 	)
+		# 	await message.delete(delay=1)
+		# 	return
 		
 
 	@tasks.loop(minutes=10)
