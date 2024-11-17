@@ -9,7 +9,7 @@ from gaitonde_reminder import Reminder
 from gaitonde_ytstream import YTStream
 from gaitonde_bDayWisher import BDayWisher
 
-logging.basicConfig(filename='.errors/gaitonde_error.log', level=logging.WARNING, format='[%(asctime)s] %(levelname)s {%(pathname)s:%(lineno)d} %(name)s %(message)s')
+logging.basicConfig(filename='.errors/gaitonde_error.log', level=logging.WARNING, format='[%(asctime)s] %(levelname)-8s {%(pathname)s:%(lineno)d} %(name)s %(message)s')
 logger = logging.getLogger(__name__)
 
 load_dotenv()

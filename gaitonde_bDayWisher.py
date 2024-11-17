@@ -67,7 +67,7 @@ class BDayWisher(commands.Cog):
 					'discordID': discordID,
 					'dob': date.fromisoformat(dob),
 					'addedBy': f'{ctx.author.name}<:>{ctx.author.id}',
-					'addedOn': str(datetime.now()).split('.')[0],
+					'addedOn': str(datetime.now(timezone.utc)).split('.')[0],
 					'guildID': ctx.guild.id
 				}
 			)
@@ -130,7 +130,7 @@ class BDayWisher(commands.Cog):
 	@commands.command(aliases=['upcomingbday', 'upcomingbdays', 'nextbday', 'nextbdays'])
 	async def nextBday(self, ctx):
 		"""Show the upcoming birthdays in the Guild for the next 3 months."""
-		today = (datetime.now() + timedelta(hours=5, minutes=30)).date()	# in IST
+		today = (datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)).date()	# in IST
 		conn = sql.connect(self.db_name)
 		cur = conn.cursor()
 		res = cur.execute(f'SELECT * FROM {self.db_table} WHERE guildID = {ctx.guild.id};').fetchall()
@@ -159,7 +159,7 @@ class BDayWisher(commands.Cog):
 			cur = conn.cursor()
 			res = cur.execute(f'SELECT * FROM {self.db_table} WHERE discordID = {discordID} and guildID = {ctx.guild.id};').fetchone()
 			dob = date.fromisoformat(res[4])
-			today = (datetime.now() + timedelta(hours=5, minutes=30)).date()	# in IST
+			today = (datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)).date()	# in IST
 			age = relativedelta(today, dob)
 			await ctx.send(f"{res[2]} is ``{age.years} years {age.months} months and {age.days} days`` old today.")
 			conn.close()
@@ -173,8 +173,8 @@ class BDayWisher(commands.Cog):
 		# for guild in self.bot.guilds:
 		# print(self.wishing_loop.current_loop, self.wishing_loop.next_iteration)
 		# NOTE: server runs in UTC time zone
-		# logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
-		today = datetime.now() + timedelta(hours=5, minutes=30)	# in IST
+		logger.warning(f'wishing_loop.current_loop: {self.wishing_loop.current_loop}, wishing_loop.next_iteration: {self.wishing_loop.next_iteration}')
+		today = datetime.now(timezone.utc) + timedelta(hours=5, minutes=30)	# in IST
 		chicardoChat_general = self.bot.get_guild(TCS_GLD_ID).get_channel(TCS_GENERAL_CHNL_ID)
 		conn = sql.connect(self.db_name)
 		cur = conn.cursor()
