@@ -136,7 +136,7 @@ class General(commands.Cog):
 			await message.delete(delay=1)
 			return
 		# Amazon
-		lnk_match = re.search(r'(.*)\s(https://www.amazon\.[a-z]+/[\w\-]+/dp/[0-9A-Z]{10})\S*\s(.*)', message.content.strip())
+		lnk_match = re.search(r'(.*)\s*(https://www.amazon\.[a-z]+/[\w\-]+/dp/[0-9A-Z]{10})\S*\s*(.*)', message.content.strip())
 		if lnk_match and message.author != self.bot.user:
 			await message.channel.send(
 				f'``{message.author}`` {lnk_match.groups()[0] if lnk_match.groups()[0] else ""} {lnk_match.groups()[1]} {lnk_match.groups()[2] if lnk_match.groups()[2] else ""}'
