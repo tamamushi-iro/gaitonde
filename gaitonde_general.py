@@ -65,15 +65,18 @@ class General(commands.Cog):
 
 	@commands.command()
 	async def osle(self, ctx):
-		await ctx.send(content=f'<@{OSLE_USR_ID}>', file=discord.File(f'{MAYMAYS_DIR_PATH}/findingOsle.jpg'))
+		# await ctx.send(content=f'<@{OSLE_USR_ID}>', file=discord.File(f'{MAYMAYS_BASE_URL}/findingOsle.jpg'))
+		await ctx.send(content=f'<@{OSLE_USR_ID}>', embed=discord.Embed().set_image(url=f'{MAYMAYS_BASE_URL}/findingOsle.jpg'))
 
 	@commands.command()
 	async def nft(self, ctx):
-		await ctx.send(content=f'<@{CRAZY_USR_ID}>', file=discord.File(f'{MAYMAYS_DIR_PATH}/nft.jpg'))
+		# await ctx.send(content=f'<@{CRAZY_USR_ID}>', file=discord.File(f'{MAYMAYS_BASE_URL}/nft.jpg'))
+		await ctx.send(embed=discord.Embed().set_image(url=f'{MAYMAYS_BASE_URL}/nft.jpg'))
 
 	@commands.command()
 	async def thecoolernft(self, ctx):
-		await ctx.send(content=f'<@{CRAZY_USR_ID}>', file=discord.File(f'{MAYMAYS_DIR_PATH}/theCoolerNFT.jpg'))
+		# await ctx.send(content=f'<@{CRAZY_USR_ID}>', file=discord.File(f'{MAYMAYS_BASE_URL}/theCoolerNFT.jpg'))
+		await ctx.send(embed=discord.Embed().set_image(url=f'{MAYMAYS_BASE_URL}/theCoolerNFT.jpg'))
 
 	@commands.command()
 	async def kanye(self, ctx):

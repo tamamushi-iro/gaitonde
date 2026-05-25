@@ -185,7 +185,7 @@ class BDayWisher(commands.Cog):
 			year, month, day = dob.year, dob.month, dob.day
 			if today.month == month and today.day == day:
 				# await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Jayanti {row[2]}! You are {today.year - year} years old today.")
-				await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Jayanti {row[2]}!")
+				await chicardoChat_general.send(f"<@&{TCS_EVERINYAN_ROLE_ID}>\n<@{row[3]}> Happy Birthday {row[2]}!")
 	
 	# we need to wait for the bot to be ready
 	# as failing to do so will raise an attribute error:

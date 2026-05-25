@@ -21,7 +21,8 @@ ffmpeg_options = {
 #class YTDLError(Exception):
 #	pass
 
-youtube_dl.utils.bug_reports_message = lambda: ''
+# https://github.com/yt-dlp/yt-dlp/issues/13507
+# youtube_dl.utils.bug_reports_message = lambda: ''
 
 class YTDLSource(discord.PCMVolumeTransformer):
 	YTDL_OPTIONS = {
@@ -34,15 +35,15 @@ class YTDLSource(discord.PCMVolumeTransformer):
 		'nocheckcertificate': True,
 		'ignoreerrors': False,
 		'logtostderr': False,
-		'quiet': True,
-		'no_warnings': True,
+		'quiet': False,
+		'no_warnings': False,
 		'default_search': 'auto',
 		'soruce_address': '0.0.0.0'
 	}
 
 	FFMPEG_OPTIONS = {
 		'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5',
-		'options': '-vn -loglevel quiet'
+		# 'options': '-vn -loglevel quiet'
 	}
 
 	ytdl = youtube_dl.YoutubeDL(YTDL_OPTIONS)

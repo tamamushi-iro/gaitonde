@@ -1,0 +1,15 @@
+[project]
+name = "gaitonde"
+version = "0.1.0"
+requires-python = ">=3.14"
+dependencies = [
+    "beautifulsoup4>=4.14.2",
+    "discord-py[voice]>=2.6.4",
+    "ipykernel>=7.1.0",
+    "nekos-py>=1.1.0",
+    "nest-asyncio>=1.6.0",
+    "python-dateutil>=2.9.0.post0",
+    "python-dotenv>=1.2.1",
+    "websockets>=15.0.1",
+    "yt-dlp>=2025.10.22",
+]
