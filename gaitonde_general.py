@@ -18,12 +18,12 @@ class General(commands.Cog):
 	def __init__(self, bot):
 		self.bot = bot
 		self.activities = cycle([
-			'Crazy\'s Sex Tape Vol. 3',
-			'Background Noise',
-			'Prince\'s Guitar',
-			'Fast & Loose',
-			'with the Queen of Hearts',
-			'God'
+			'playing Crazy\'s Sex Tape Vol. 3',
+			'playing Background Noise',
+			'playing Prince\'s Guitar',
+			'playing Fast & Loose',
+			'playing with the Queen of Hearts',
+			'playing God'
 		])
 		self.activity_loop.start()
 
